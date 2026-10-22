@@ -32,6 +32,14 @@ jobs:
 
       - run: pnpm dprint fmt
 
+      - name: Smoke test TypeScript formatting
+        run: |
+          cd "$(mktemp -d "$RUNNER_TEMP/typescript-smoke.XXXXXX")"
+          git init --quiet
+          git fetch --depth=1 https://github.com/microsoft/TypeScript.git 28534d7609062699a68b1b66e2367f8d95dbf290
+          git checkout --detach FETCH_HEAD
+          "$GITHUB_WORKSPACE/node_modules/.bin/dprint" fmt --incremental=false --plugins "$GITHUB_WORKSPACE/plugin.wasm" -- "**/*.go"
+
       - run: git add .
       - run: git diff --staged --exit-code
 
